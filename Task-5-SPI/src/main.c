@@ -1,46 +1,63 @@
 #include "main.h"
 
 int main(void) {
-    LED_Init();
-    SPI1_Init();
-    LIS302DL_Init();
+    init();
 
     u8 id;
 
     LIS302DL_Read(0x0F, &id, 1);
 
-    int32_t data[3];
-
-    while(ENABLE) {
-        LIS302DL_ReadACC(data);
-
-        GPIO_WriteBit(GPIOD, LED_Pins, SET);
-        delay(1000-data[0]);
-        GPIO_WriteBit(GPIOD, LED_Pins, RESET);
-        delay(1000-data[0]);
+    while(1) {
+        loop();
     }
 }
 
-void LED_Init(void) {
-    RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOD, ENABLE);
-
-    GPIO_InitTypeDef LED_InitStruct;
-    LED_InitStruct.GPIO_Mode = GPIO_Mode_OUT;
-    LED_InitStruct.GPIO_OType = GPIO_OType_PP;
-    LED_InitStruct.GPIO_Pin = LED_Pins;
-    LED_InitStruct.GPIO_PuPd = GPIO_PuPd_UP;
-    LED_InitStruct.GPIO_Speed = GPIO_Speed_25MHz;
-    GPIO_Init(GPIOD, &LED_InitStruct);
+void init(void) {
+    initLeds();
+    initTimer();
+    initPWM();
+    initSpi();
+    LIS302DL_Init();
 }
 
-void delay(int i) {
-    i *= 1000;
-    while (--i > 0) {
+void loop(void) {
+    int32_t data[3];
+    LIS302DL_ReadACC(data);
+
+    TIM_SetCompare1(TIM4, abs(PWM_PERIOD-abs(data[1])));
+    TIM_SetCompare2(TIM4, abs(PWM_PERIOD-abs(data[0])));
+    TIM_SetCompare3(TIM4, abs(PWM_PERIOD+abs(data[1])));
+    TIM_SetCompare4(TIM4, abs(PWM_PERIOD+abs(data[0])));
+
+    delay(10);
+}
+
+void delay(u32 ms) {
+    ms *= 1000;
+    while (--ms > 0) {
         __NOP();
     }
 }
 
-void SPI1_Init(void) {
+void initLeds() {
+    GPIO_InitTypeDef GPIO_InitStructure;
+
+    RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOD, ENABLE);
+
+    GPIO_InitStructure.GPIO_Pin = LEDS;
+    GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF;
+    GPIO_InitStructure.GPIO_Speed = GPIO_Speed_100MHz;
+    GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
+    GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_UP;
+    GPIO_Init(GPIOD, &GPIO_InitStructure);
+
+    GPIO_PinAFConfig(GPIOD, GPIO_PinSource12, GPIO_AF_TIM4);
+    GPIO_PinAFConfig(GPIOD, GPIO_PinSource13, GPIO_AF_TIM4);
+    GPIO_PinAFConfig(GPIOD, GPIO_PinSource14, GPIO_AF_TIM4);
+    GPIO_PinAFConfig(GPIOD, GPIO_PinSource15, GPIO_AF_TIM4);
+}
+
+void initSpi(void) {
     RCC_APB2PeriphClockCmd(RCC_APB2Periph_SPI1, ENABLE);
     RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOA, ENABLE);
     RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOE, ENABLE);
@@ -77,6 +94,50 @@ void SPI1_Init(void) {
     SPI_Init(SPI1, &SPI_InitStructure);
 
     SPI_Cmd(SPI1, ENABLE);
+}
+
+void initTimer() {
+    /* TIM4 clock enable */
+    RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM4, ENABLE);
+
+    /* Compute the prescaler value */
+    u32 PrescalerValue = (uint16_t) ((SystemCoreClock / 2) / 21000000) - 1;
+
+    TIM_TimeBaseInitTypeDef TIM_TimeBaseStructure;
+    /* Time base configuration */
+    TIM_TimeBaseStructure.TIM_Period = PWM_PERIOD;
+    TIM_TimeBaseStructure.TIM_Prescaler = PrescalerValue;
+    TIM_TimeBaseStructure.TIM_ClockDivision = 0;
+    TIM_TimeBaseStructure.TIM_CounterMode = TIM_CounterMode_Up;
+
+    TIM_TimeBaseInit(TIM4, &TIM_TimeBaseStructure);
+}
+
+void initPWM() {
+    TIM_OCInitTypeDef TIM_OCInitStructure;
+
+    TIM_OCInitStructure.TIM_OCMode = TIM_OCMode_PWM1;
+    TIM_OCInitStructure.TIM_OutputState = TIM_OutputState_Enable;
+    TIM_OCInitStructure.TIM_Pulse = 0;
+    TIM_OCInitStructure.TIM_OCPolarity = TIM_OCPolarity_High;
+
+    /* PWM1 Mode configuration: Channel1 (GPIOD Pin 12)*/
+    TIM_OC1Init(TIM4, &TIM_OCInitStructure);
+    TIM_OC1PreloadConfig(TIM4, TIM_OCPreload_Enable);
+
+    /* PWM1 Mode configuration: Channel2 (GPIOD Pin 13)*/
+    TIM_OC2Init(TIM4, &TIM_OCInitStructure);
+    TIM_OC2PreloadConfig(TIM4, TIM_OCPreload_Enable);
+
+    /* PWM1 Mode configuration: Channel3 (GPIOD Pin 14)*/
+    TIM_OC3Init(TIM4, &TIM_OCInitStructure);
+    TIM_OC3PreloadConfig(TIM4, TIM_OCPreload_Enable);
+
+    /* PWM1 Mode configuration: Channel4 (GPIOD Pin 15)*/
+    TIM_OC4Init(TIM4, &TIM_OCInitStructure);
+    TIM_OC4PreloadConfig(TIM4, TIM_OCPreload_Enable);
+
+    TIM_Cmd(TIM4, ENABLE);
 }
 
 void LIS302DL_Init() {
@@ -145,4 +206,21 @@ void LIS302DL_ReadACC(int32_t* out) {
       *out =(int32_t)(72 * (int8_t)buffer[2*i]);
       out++;
     }
+}
+
+void LIS302DL_ReadACCY(int32_t* out) {
+    u8 buffer[6];
+    LIS302DL_Read(0x2B, buffer, 6);
+
+    for(int i=0; i<3; i++) {
+      *out =(int32_t)(72 * (int8_t)buffer[2*i]);
+      out++;
+    }
+}
+
+u32 abs(u32 n) {
+    if (n < 0) {
+        n *= -1;
+    }
+    return n;
 }

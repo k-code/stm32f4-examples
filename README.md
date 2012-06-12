@@ -32,3 +32,8 @@ Task-5-SPI
 ----------
 
 Use onboard accelerometer by SPI bus.
+
+Task-6-Interrupt
+----------------
+
+Expamle external and system timer interrupt

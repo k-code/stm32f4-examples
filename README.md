@@ -33,7 +33,12 @@ Task-5-SPI
 
 Use onboard accelerometer by SPI bus.
 
-Task-6-USB
+Task-6-Interrupt
+----------------
+
+Expamle external and system timer interrupt
+
+Task-7-USB
 ----------
 
 Simple exampe CDC USB device. Press 'a' and 's' for toggle LEDs, press user button for send 'HELLO' to PC.

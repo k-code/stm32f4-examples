@@ -141,6 +141,7 @@ void PendSV_Handler(void)
   */
 void SysTick_Handler(void)
 {
+
     TimingDelay_Decrement();
 }
 
@@ -167,12 +168,11 @@ void SysTick_Handler(void)
   */
 void EXTI0_IRQHandler(void)
 {
-    STM_EVAL_LEDToggle(LED4);
-  static uint8_t test[5] = "HELLO";
+  static uint8_t test[6] = "HELLO\n";
     /* Clear the EXTI line pending bit */
   EXTI_ClearITPendingBit(USER_BUTTON_EXTI_LINE);
   
-  VCP_DataTx (&test[0],5);
+  VCP_DataTx (&test[0],6);
 }
 
 /**
@@ -184,8 +184,6 @@ void OTG_FS_WKUP_IRQHandler(void)
 {
   if(USB_OTG_dev.cfg.low_power)
   {
-
-      STM_EVAL_LEDToggle(LED5);
 	/* Reset SLEEPDEEP and SLEEPONEXIT bits */
 	SCB->SCR &= (uint32_t)~((uint32_t)(SCB_SCR_SLEEPDEEP_Msk | SCB_SCR_SLEEPONEXIT_Msk));
 
@@ -203,7 +201,6 @@ void OTG_FS_WKUP_IRQHandler(void)
   */
 void OTG_FS_IRQHandler(void)
 {
-    STM_EVAL_LEDToggle(LED6);
   USBD_OTG_ISR_Handler (&USB_OTG_dev);
 }
 

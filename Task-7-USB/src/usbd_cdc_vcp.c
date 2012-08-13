@@ -25,6 +25,7 @@
 
 /* Includes ------------------------------------------------------------------*/
 #include "usbd_cdc_vcp.h"
+#include "usbd_cdc_core.h"
 #include "stm32f4_discovery.h"
 
 /* Private typedef -----------------------------------------------------------*/
@@ -147,7 +148,6 @@ uint16_t VCP_DataTx (uint8_t* Buf, uint32_t Len)
 	//loop through buffer
 	for( i = 0; i < Len; i++ )
 	{
-	    STM_EVAL_LEDToggle(LED5);
 		APP_Rx_Buffer[APP_Rx_ptr_in] = (uint8_t) Buf[i];// ����� APP_Rx_Buffer ������������ ��������� USB      
 		//increase pointer value
 		APP_Rx_ptr_in++;
@@ -179,17 +179,14 @@ uint16_t VCP_DataTx (uint8_t* Buf, uint32_t Len)
 static uint16_t VCP_DataRx (uint8_t* Buf, uint32_t Len)
 {
 	uint32_t i;
-    STM_EVAL_LEDToggle(LED5);
 	for (i = 0; i < Len; i++)
 	{
 		if (*(Buf + i) == 'a' || *(Buf + i) == 'A' )
 		{
-		    //STM32F4_Discovery_LEDOn(LED6);
 			STM_EVAL_LEDOn(LED6);//��� �������� �� ��������� A ���������� ���������
 		}
 		else if (*(Buf + i) == 's' || *(Buf + i) == 'S' )
 		{
-//		    STM32F4_Discovery_LEDOff(LED6);
 			STM_EVAL_LEDOff(LED6);//��� �������� �� ��������� S ������ ���������
 		}
 	}

@@ -44,14 +44,8 @@ int main(void)
 {
   RCC_ClocksTypeDef RCC_Clocks;
   
-  /* Initialize LEDs and User_Button on STM32F4-Discovery --------------------*/
-  //STM32F4_Discovery_PBInit(BUTTON_USER, BUTTON_MODE_EXTI);
-  STM_EVAL_PBInit(BUTTON_USER, BUTTON_MODE_EXTI);//пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ, пїЅ пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ "HELLO"
-
-  //STM32F4_Discovery_LEDInit(LED4);
-  //STM32F4_Discovery_LEDInit(LED4);
-  //STM32F4_Discovery_LEDInit(LED4);
-  //STM32F4_Discovery_LEDInit(LED4);
+  /* Initialize LEDs and User_Button on STM32F4-Discovery --------------------*/ 
+  STM_EVAL_PBInit(BUTTON_USER, BUTTON_MODE_EXTI);//при нажатии кнопки, в порт выводится "HELLO"
   
   STM_EVAL_LEDInit(LED4);
   STM_EVAL_LEDInit(LED3);
@@ -75,11 +69,11 @@ int main(void)
         &USR_cb);
   
   DemoEnterCondition = 0x01;
-  //пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
+  //дальше все на прерываниях
   while (1) {}
-  //пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ A пїЅ S - пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅ 
-  //пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ VCP_DataRx 
-  //пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ DISCOVERY пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ "HELLO"
+  //при передаче в порт символов A и S - светодиод загорается и гаснет 
+  //обработка идет в функции VCP_DataRx 
+  //при нажатии кнопки на DISCOVERY по прерыванию в порт передается "HELLO"
 }
 
 

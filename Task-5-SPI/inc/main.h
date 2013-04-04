@@ -36,6 +36,7 @@ void LIS302DL_Read(u8 REG, u8 *DATA, u8 count);
 void LIS302DL_ReadACC(int32_t* out);
 void LIS302DL_ReadACCY(int32_t* out);
 
-u32 abs(u32 n);
+u32 abs(int32_t n);
+int32_t cround(int32_t x, int32_t y);
 
 #endif /* __MAIN_H */

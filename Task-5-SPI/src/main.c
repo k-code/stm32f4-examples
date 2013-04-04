@@ -24,10 +24,27 @@ void loop(void) {
     int32_t data[3];
     LIS302DL_ReadACC(data);
 
-    TIM_SetCompare1(TIM4, abs(PWM_PERIOD-abs(data[1])));
-    TIM_SetCompare2(TIM4, abs(PWM_PERIOD-abs(data[0])));
-    TIM_SetCompare3(TIM4, abs(PWM_PERIOD+abs(data[1])));
-    TIM_SetCompare4(TIM4, abs(PWM_PERIOD+abs(data[0])));
+    int32_t x = cround(data[0], 300)/5;
+    int32_t y = cround(data[1], 300)/5;
+
+
+    TIM_SetCompare1(TIM4, 0);
+    TIM_SetCompare2(TIM4, 0);
+    TIM_SetCompare3(TIM4, 0);
+    TIM_SetCompare4(TIM4, 0);
+
+    if ( x > 0 ) {
+        TIM_SetCompare2(TIM4, x);
+    }
+    else {
+        TIM_SetCompare4(TIM4, -x);
+    }
+    if ( y > 0 ) {
+        TIM_SetCompare1(TIM4, y);
+    }
+    else {
+        TIM_SetCompare3(TIM4, -y);
+    }
 
     delay(10);
 }
@@ -218,9 +235,13 @@ void LIS302DL_ReadACCY(int32_t* out) {
     }
 }
 
-u32 abs(u32 n) {
+u32 abs(int32_t n) {
     if (n < 0) {
-        n *= -1;
+        return -n;
     }
     return n;
+}
+
+int32_t cround(int32_t x, int32_t y) {
+    return x/y*y;
 }

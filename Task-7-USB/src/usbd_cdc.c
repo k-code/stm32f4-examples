@@ -191,13 +191,13 @@ static uint16_t cdc_DataRx (uint8_t* Buf, uint32_t Len)
 		if (*(Buf + i) == 'a' || *(Buf + i) == 'A' )
 		{
 			//turn on the blue led
-			STM32F4_Discovery_LEDOn(LED6);
+			STM_EVAL_LEDOn(LED6);
 		}
 		//if there is an 's' in buffer
 		else if (*(Buf + i) == 's' || *(Buf + i) == 'S' )
 		{
 			//turn off the blue led
-			STM32F4_Discovery_LEDOff(LED6);
+			STM_EVAL_LEDOff(LED6);
 		}
 	}
 	//send received data back to sender

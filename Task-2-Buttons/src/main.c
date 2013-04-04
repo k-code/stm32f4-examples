@@ -20,26 +20,19 @@ void loop() {
     uint8_t currentButtonStatus = GPIO_ReadInputDataBit(GPIOA, USER_BUTTON);
 
     if (lastButtonStatus != currentButtonStatus && currentButtonStatus != RESET) {
-        GPIO_ResetBits(GPIOD, LEDS);
-        currentLed++;
-        if (currentLed >= 4) {
-            currentLed = 0;
-        }
+        GPIO_ToggleBits(GPIOA, LED);
     }
     lastButtonStatus = currentButtonStatus;
-
-    GPIO_ToggleBits(GPIOD, LED[currentLed]);
-    delay(250);
 }
 
 void initLeds() {
-    RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOD, ENABLE);
+    RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOA, ENABLE);
 
     GPIO_InitTypeDef gpio;
     GPIO_StructInit(&gpio);
     gpio.GPIO_Mode = GPIO_Mode_OUT;
     gpio.GPIO_Pin = LEDS;
-    GPIO_Init(GPIOD, &gpio);
+    GPIO_Init(GPIOA, &gpio);
 }
 
 void initButton() {

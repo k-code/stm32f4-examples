@@ -42,3 +42,13 @@ Task-7-USB
 ----------
 
 Simple exampe CDC USB device. Press 'a' and 's' for toggle LEDs, press user button for send 'HELLO' to PC.
+
+Task-8-US
+---------
+
+Simple example shows how to use Ultrasonic sensor
+
+Task-9-RTC
+----------
+
+Real time clock example

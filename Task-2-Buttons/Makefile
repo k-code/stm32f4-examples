@@ -1,4 +1,4 @@
-PROJECT_NAME=led
+PROJECT_NAME=button
 
 BUILDDIR = build
 

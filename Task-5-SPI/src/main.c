@@ -191,9 +191,11 @@ u8 LIS302DL_GetByte() {
 }
 
 void LIS302DL_Write(u8 REG, u8 *DATA, u8 count) {
+    int i;
+
     GPIO_WriteBit(GPIOE, GPIO_Pin_3, RESET);
     LIS302DL_SendByte(REG);
-    for (int i=0; i < count; i++) {
+    for (i=0; i < count; i++) {
         LIS302DL_SendByte(*DATA);
         DATA++;
     }
@@ -201,13 +203,15 @@ void LIS302DL_Write(u8 REG, u8 *DATA, u8 count) {
 }
 
 void LIS302DL_Read(u8 REG, u8 *DATA, u8 count) {
+    u8 i;
+
     GPIO_WriteBit(GPIOE, GPIO_Pin_3, RESET);
     REG |= 0x80;
     if (count > 1) {
         REG |= 0x40;
     }
     LIS302DL_SendByte(REG);
-    for (u8 i=0; i < count; i++) {
+    for (i=0; i < count; i++) {
         *DATA = LIS302DL_SendByte((u8)0x00);
         DATA++;
     }
@@ -216,20 +220,24 @@ void LIS302DL_Read(u8 REG, u8 *DATA, u8 count) {
 }
 
 void LIS302DL_ReadACC(int32_t* out) {
+    int i;
+
     u8 buffer[6];
     LIS302DL_Read(0x29, buffer, 6);
 
-    for(int i=0; i<3; i++) {
+    for(i=0; i<3; i++) {
       *out =(int32_t)(72 * (int8_t)buffer[2*i]);
       out++;
     }
 }
 
 void LIS302DL_ReadACCY(int32_t* out) {
+    int i;
+
     u8 buffer[6];
     LIS302DL_Read(0x2B, buffer, 6);
 
-    for(int i=0; i<3; i++) {
+    for(i=0; i<3; i++) {
       *out =(int32_t)(72 * (int8_t)buffer[2*i]);
       out++;
     }

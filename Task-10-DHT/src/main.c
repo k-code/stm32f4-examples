@@ -1,5 +1,5 @@
 #include "main.h"
-#include "dht.h"
+#include "dht21.h"
 #include "time.h"
 
 void delay(uint32_t ms) {
@@ -11,7 +11,7 @@ void delay(uint32_t ms) {
 
 int main() {
     init();
-    DHT_init(DHT_AM2301);
+    DHT21_init();
     TIME_init();
 
     do {
@@ -35,8 +35,9 @@ void loop() {
 	GPIO_ResetBits(GPIOD, LEDS);
 
 	uint16_t temp = 0, hum = 0;
-	uint8_t err = DHT_read(DHT_C, &temp, &hum), i = 0, j = 0;
+	uint8_t err = DHT21_read(DHT_C, &temp, &hum), i = 0, j = 0;
 	temp = temp / 10;
+	hum = hum / 10;
 
 	if (err != DHT_OK) {
 		if (err == DHT_ERR_CON) {

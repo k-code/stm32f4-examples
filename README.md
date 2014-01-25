@@ -52,3 +52,7 @@ Task-9-RTC
 ----------
 
 Real time clock example
+
+Task-10-DHT
+
+Simple exemple for DHT21/AM2301 sensor

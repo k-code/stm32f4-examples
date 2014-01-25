@@ -34,7 +34,8 @@ void loop() {
     TIME_delay(2000);
 	GPIO_ResetBits(GPIOD, LEDS);
 
-	uint16_t temp = 0, hum = 0;
+	int16_t temp = 0;
+	uint16_t hum = 0;
 	uint8_t err = DHT21_read(DHT_C, &temp, &hum), i = 0, j = 0;
 	temp = temp / 10;
 	hum = hum / 10;

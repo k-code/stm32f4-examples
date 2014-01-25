@@ -23,6 +23,6 @@
 #define DHT21_BUS RCC_AHB1Periph_GPIOA
 
 void DHT21_init();
-uint8_t DHT21_read(uint8_t s, uint16_t *t, uint16_t *h); // TODO : the first byte is whole number the second byte is fractional part
+uint8_t DHT21_read(uint8_t s, int16_t *t, uint16_t *h); // TODO : the first byte is whole number the second byte is fractional part
 
 #endif /* DHT21_H_ */

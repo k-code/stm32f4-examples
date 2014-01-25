@@ -12,7 +12,7 @@
 
 static void pinModeWrite();
 static void pinModeRead();
-static uint16_t convertCtoF(uint16_t c);
+static int16_t convertCtoF(int16_t c);
 static uint8_t read(uint8_t *data);
 
 void DHT21_init() {
@@ -21,8 +21,9 @@ void DHT21_init() {
 	pinModeRead();
 }
 
-uint8_t DHT21_read(uint8_t S, uint16_t *t, uint16_t *h) {
-	uint16_t _t=0, _h =0;
+uint8_t DHT21_read(uint8_t S, int16_t *t, uint16_t *h) {
+	int16_t _t=0;
+	uint16_t _h =0;
 	uint8_t data[5];
 
 	uint8_t err = read(data);
@@ -30,9 +31,12 @@ uint8_t DHT21_read(uint8_t S, uint16_t *t, uint16_t *h) {
 		_h = data[0];
 		_h <<= 8;
 		_h |= data[1];
-		_t = data[2];
+		_t = data[2] & 0x7F;
 		_t <<= 8;
 		_t |= data[3];
+		if (data[2] & 0x80) {
+			_t = 0 - _t;
+		}
 		if (S == DHT_F) {
 			_t= convertCtoF(_t);
 		}
@@ -42,7 +46,7 @@ uint8_t DHT21_read(uint8_t S, uint16_t *t, uint16_t *h) {
 	return err;
 }
 
-static uint16_t convertCtoF(uint16_t c) {
+static int16_t convertCtoF(int16_t c) {
 	return c * 9 / 5 + 32;
 }
 

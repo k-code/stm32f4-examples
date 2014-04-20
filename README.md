@@ -54,5 +54,16 @@ Task-9-RTC
 Real time clock example
 
 Task-10-DHT
+-----------
 
 Simple exemple for DHT21/AM2301 sensor
+
+Task-11-SepperMotor
+-------------------
+
+Simple example about how to work with sepper motor
+
+Task-12-ADC
+-----------
+
+Simple ADC example

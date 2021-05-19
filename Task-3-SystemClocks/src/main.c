@@ -50,7 +50,7 @@ void slowMode() {
     RCC_PLLConfig(RCC_PLLSource_HSE, 8, 192, 8, 15);
     RCC_PLLCmd(ENABLE);
 
-    RCC_WaitForPLLSturtUp();
+    RCC_WaitForPLLStartUp();
 
     RCC_HCLKConfig(RCC_SYSCLK_Div16);
     RCC_PCLK1Config(RCC_HCLK_Div16);
@@ -71,7 +71,7 @@ void fastMode() {
     RCC_PLLConfig(RCC_PLLSource_HSE, 8, 336, 2, 15);
     RCC_PLLCmd(ENABLE);
 
-    RCC_WaitForPLLSturtUp();
+    RCC_WaitForPLLStartUp();
 
     RCC_HCLKConfig(RCC_SYSCLK_Div4);
     RCC_PCLK1Config(RCC_HCLK_Div1);

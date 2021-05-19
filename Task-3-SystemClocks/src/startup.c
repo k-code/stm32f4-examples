@@ -9,7 +9,7 @@ uint32_t SystemInit(void) {
     RCC_PLLConfig(RCC_PLLSource_HSE, 8, 336, 4, 7);
     RCC_PLLCmd(ENABLE);
 
-    RCC_WaitForPLLSturtUp();
+    RCC_WaitForPLLStartUp();
 
     RCC_HCLKConfig(RCC_SYSCLK_Div4);
     RCC_PCLK1Config(RCC_HCLK_Div1);
@@ -18,7 +18,7 @@ uint32_t SystemInit(void) {
     return ENABLE;
 }
 
-void RCC_WaitForPLLSturtUp(void) {
+void RCC_WaitForPLLStartUp(void) {
     while ( (RCC->CR & RCC_CR_PLLRDY) == 0 ) {
         __NOP();
     }
